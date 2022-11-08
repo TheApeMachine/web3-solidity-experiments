@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/theapemachine/web3-solidity-experiments/punchface"
 	"github.com/theapemachine/wrkspc/errnie"
@@ -17,13 +16,15 @@ func main() {
 		"fd4eef6dec5575cc78f3f14d4b749094f8b88ad7883caaa8d1d24e9a01e3732d",
 	).Dial()
 
-	spew.Dump(client)
-
 	// Deploy the smart contract function.
 	address, tx, instance, err := punchface.DeployPunchface(
 		client.Auth(), client.Conn(),
 	)
-	errnie.Handles(err)
+
+	if err := errnie.Handles(err); err.Type != errnie.NIL {
+		return
+	}
+
 	errnie.Logs(address.Hex())
 
 	errnie.Logs("instance", instance)
